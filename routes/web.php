@@ -252,5 +252,11 @@ Route::middleware('auth')->group(function () {
     Route::post('/notifications/read-all', [AdminNotificationController::class, 'markAllAsRead'])->name('notifications.read-all');
 });
 
+// Storage link route for development
+Route::get('/generate', function() {
+    \Illuminate\Support\Facades\Artisan::call('storage:link');
+    echo 'Storage link created successfully!';
+});
+
 // Include authentication routes
 require __DIR__ . '/auth.php';
