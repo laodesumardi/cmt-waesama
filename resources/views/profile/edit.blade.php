@@ -13,8 +13,14 @@
                     <div class="flex flex-col md:flex-row items-center md:items-start space-y-6 md:space-y-0 md:space-x-8">
                         <!-- Avatar -->
                         <div class="flex-shrink-0">
-                            <div class="w-32 h-32 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center shadow-lg">
-                                <span class="text-white font-bold text-4xl">{{ strtoupper(substr($user->name, 0, 2)) }}</span>
+                            <div class="w-32 h-32 rounded-full overflow-hidden shadow-lg">
+                                @if($user->avatar)
+                                    <img src="{{ asset('storage/' . $user->avatar) }}" alt="Avatar" class="w-full h-full object-cover">
+                                @else
+                                    <div class="w-full h-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center">
+                                        <span class="text-white font-bold text-4xl">{{ strtoupper(substr($user->name, 0, 2)) }}</span>
+                                    </div>
+                                @endif
                             </div>
                         </div>
 
