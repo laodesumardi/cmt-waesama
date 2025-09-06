@@ -69,9 +69,26 @@ class TransparencyController extends Controller
             ->get();
         
         // Get statistics
+        $currentYear = date('Y');
+        $yearStart = $currentYear . '-01-01';
+        $yearEnd = $currentYear . '-12-31';
+        
+        $currentYearBudgets = Transparency::published()
+            ->byCategory('budget')
+            ->whereNotNull('amount')
+            ->byPeriod($yearStart, $yearEnd)
+            ->get();
+        
+        $totalBudget = $currentYearBudgets->sum('amount');
+        $realizedBudget = $totalBudget; // All published budget is considered realized
+        $remainingBudget = 0; // No remaining budget for published items
+        $totalDocuments = Transparency::published()->count();
+        
         $stats = [
-            'total_documents' => Transparency::published()->count(),
-            'total_budget' => Transparency::published()->whereNotNull('amount')->sum('amount'),
+            'total_documents' => $totalDocuments,
+            'total_budget' => 'Rp ' . number_format($totalBudget, 0, ',', '.'),
+            'realized_budget' => 'Rp ' . number_format($realizedBudget, 0, ',', '.'),
+            'remaining_budget' => 'Rp ' . number_format($remainingBudget, 0, ',', '.'),
             'total_projects' => Transparency::published()->byCategory('project')->count(),
             'total_views' => Transparency::published()->sum('views'),
             'categories' => Transparency::published()->selectRaw('category, COUNT(*) as count')
