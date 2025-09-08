@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Controllers\Controller;
 use App\Models\DocumentRequest;
 use App\Events\DocumentRequestCreated;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule;
 
 class DocumentRequestController extends Controller
@@ -90,10 +92,31 @@ class DocumentRequestController extends Controller
 
         $validated['user_id'] = Auth::id();
         
-        // Generate request number
-        $validated['request_number'] = 'DOC-' . date('Ymd') . '-' . str_pad(DocumentRequest::whereDate('created_at', today())->count() + 1, 4, '0', STR_PAD_LEFT);
+        // Use database transaction to ensure unique request number
+        $documentRequest = DB::transaction(function () use ($validated) {
+            // Generate unique request number
+            $today = date('Ymd');
+            $prefix = 'DOC-' . $today . '-';
+            
+            // Find the highest existing number for today with row lock
+            $lastRequest = DocumentRequest::where('request_number', 'like', $prefix . '%')
+                ->orderBy('request_number', 'desc')
+                ->lockForUpdate()
+                ->first();
+                
+            if ($lastRequest) {
+                // Extract the number part and increment
+                $lastNumber = (int) substr($lastRequest->request_number, -4);
+                $nextNumber = $lastNumber + 1;
+            } else {
+                // First request of the day
+                $nextNumber = 1;
+            }
+            
+            $validated['request_number'] = $prefix . str_pad($nextNumber, 4, '0', STR_PAD_LEFT);
 
-        $documentRequest = DocumentRequest::create($validated);
+            return DocumentRequest::create($validated);
+        });
 
         // Trigger event
         event(new DocumentRequestCreated($documentRequest));
