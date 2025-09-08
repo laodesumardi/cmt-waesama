@@ -8,9 +8,9 @@ use App\Services\NotificationService;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
 
-class SendDocumentRequestCreatedNotification implements ShouldQueue
+class SendDocumentRequestCreatedNotification
 {
-    use InteractsWithQueue;
+    // Removed ShouldQueue to make listener synchronous
 
     protected $notificationService;
 

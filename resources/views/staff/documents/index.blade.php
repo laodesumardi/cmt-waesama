@@ -182,7 +182,13 @@
                             <tr class="hover:bg-gray-50 transition-colors duration-200">
                                 <td class="px-6 py-4 whitespace-nowrap">
                                     <div class="text-sm font-medium text-gray-900">#{{ $request->id }}</div>
-                                    <div class="text-sm text-gray-500">{{ $request->created_at->format('d/m/Y H:i') }}</div>
+                                    <div class="text-sm text-gray-500">
+                                        @if($request->created_at)
+                                            {{ $request->created_at->format('d/m/Y H:i') }}
+                                        @else
+                                            Tanggal tidak tersedia
+                                        @endif
+                                    </div>
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap">
                                     <div class="text-sm font-medium text-gray-900">{{ $request->applicant_name }}</div>
@@ -205,7 +211,11 @@
                                     </span>
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                    {{ $request->created_at->format('d/m/Y') }}
+                                    @if($request->created_at)
+                                        {{ $request->created_at->format('d/m/Y') }}
+                                    @else
+                                        -
+                                    @endif
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
                                     <div class="flex space-x-2">

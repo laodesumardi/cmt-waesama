@@ -90,7 +90,7 @@ return [
             'type' => 'document_request_created',
             'priority' => 'high',
             'channels' => ['database', 'broadcast', 'email'],
-            'target_roles' => ['admin', 'staff'],
+            'target_roles' => ['super-admin', 'admin', 'staff'],
             'email' => true,
             'icon' => 'fas fa-file-alt',
         ],
@@ -133,6 +133,41 @@ return [
             'target_roles' => ['admin', 'staff'],
             'email' => false,
             'icon' => 'fas fa-check-circle',
+        ],
+    ],
+
+    'letter_request' => [
+        'created' => [
+            'type' => 'letter_request_created',
+            'priority' => 'high',
+            'channels' => ['database', 'broadcast'],
+            'target_roles' => ['super-admin', 'admin', 'staff'],
+            'email' => false,
+            'icon' => 'fas fa-envelope',
+        ],
+        'submitted' => [
+            'type' => 'letter_request_submitted',
+            'priority' => 'medium',
+            'channels' => ['database', 'broadcast', 'email'],
+            'target_roles' => ['user'],
+            'email' => true,
+            'icon' => 'fas fa-check-circle',
+        ],
+        'status_updated' => [
+            'type' => 'letter_request_status_updated',
+            'priority' => 'medium',
+            'channels' => ['database', 'broadcast', 'email'],
+            'target_roles' => ['user'],
+            'email' => true,
+            'icon' => 'fas fa-sync-alt',
+        ],
+        'status_updated_admin' => [
+            'type' => 'letter_request_status_updated_admin',
+            'priority' => 'medium',
+            'channels' => ['database', 'broadcast'],
+            'target_roles' => ['admin', 'staff'],
+            'email' => false,
+            'icon' => 'fas fa-envelope',
         ],
     ],
 
@@ -232,11 +267,6 @@ return [
         'medium' => [
             'label' => 'Medium',
             'color' => 'blue',
-            'sound' => false,
-        ],
-        'medium' => [
-            'label' => 'Medium',
-            'color' => 'yellow',
             'sound' => false,
         ],
         'low' => [

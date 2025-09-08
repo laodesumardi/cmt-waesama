@@ -10,7 +10,7 @@
                     <i class="fas fa-arrow-left text-lg"></i>
                 </a>
                 <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-                    Detail Pengajuan #{{ $document->request_number }}
+                    Detail Pengajuan #{{ $document->request_number ?? 'DOC-' . str_pad($document->id, 6, '0', STR_PAD_LEFT) }}
                 </h2>
             </div>
             <div class="flex space-x-2">
@@ -62,7 +62,7 @@
                                     <div class="w-3 h-3 bg-blue-600 rounded-full mr-3"></div>
                                     <div class="flex-1">
                                         <p class="text-sm font-medium text-gray-900">Pengajuan Diterima</p>
-                                        <p class="text-xs text-gray-500">{{ $document->created_at->format('d M Y, H:i') }}</p>
+                                        <p class="text-xs text-gray-500">{{ $document->created_at ? $document->created_at->format('d M Y, H:i') : '-' }}</p>
                                     </div>
                                 </div>
 
@@ -71,7 +71,7 @@
                                         <div class="w-3 h-3 {{ $document->status === 'processing' ? 'bg-yellow-600' : 'bg-blue-600' }} rounded-full mr-3"></div>
                                         <div class="flex-1">
                                             <p class="text-sm font-medium text-gray-900">Sedang Diproses</p>
-                                            <p class="text-xs text-gray-500">{{ $document->updated_at->format('d M Y, H:i') }}</p>
+                                            <p class="text-xs text-gray-500">{{ $document->updated_at ? $document->updated_at->format('d M Y, H:i') : '-' }}</p>
                                         </div>
                                     </div>
                                 @endif
@@ -81,7 +81,7 @@
                                         <div class="w-3 h-3 bg-green-600 rounded-full mr-3"></div>
                                         <div class="flex-1">
                                             <p class="text-sm font-medium text-gray-900">Dokumen Selesai</p>
-                                            <p class="text-xs text-gray-500">{{ $document->updated_at->format('d M Y, H:i') }}</p>
+                                            <p class="text-xs text-gray-500">{{ $document->updated_at ? $document->updated_at->format('d M Y, H:i') : '-' }}</p>
                                         </div>
                                     </div>
                                 @elseif($document->status === 'rejected')
@@ -89,7 +89,7 @@
                                         <div class="w-3 h-3 bg-red-600 rounded-full mr-3"></div>
                                         <div class="flex-1">
                                             <p class="text-sm font-medium text-gray-900">Pengajuan Ditolak</p>
-                                            <p class="text-xs text-gray-500">{{ $document->updated_at->format('d M Y, H:i') }}</p>
+                                            <p class="text-xs text-gray-500">{{ $document->updated_at ? $document->updated_at->format('d M Y, H:i') : '-' }}</p>
                                         </div>
                                     </div>
                                 @endif
@@ -114,12 +114,12 @@
 
                                 <div>
                                     <label class="block text-sm font-medium text-gray-700 mb-1">Tanggal Pengajuan</label>
-                                    <p class="text-sm text-gray-900">{{ $document->created_at->format('d F Y, H:i') }}</p>
+                                    <p class="text-sm text-gray-900">{{ $document->created_at ? $document->created_at->format('d F Y, H:i') : '-' }}</p>
                                 </div>
 
                                 <div>
                                     <label class="block text-sm font-medium text-gray-700 mb-1">Estimasi Selesai</label>
-                                    <p class="text-sm text-gray-900">{{ $document->created_at->addDays(3)->format('d F Y') }}</p>
+                                    <p class="text-sm text-gray-900">{{ $document->created_at ? $document->created_at->addDays(3)->format('d F Y') : '-' }}</p>
                                 </div>
                             </div>
 
@@ -132,6 +132,34 @@
                         </div>
                     </div>
 
+                    <!-- System Information -->
+                    <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
+                        <div class="p-6">
+                            <h3 class="text-lg font-semibold text-gray-900 mb-4">Informasi Sistem</h3>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-1">ID Pengajuan</label>
+                                    <p class="text-sm text-gray-900 font-mono">{{ $document->id }}</p>
+                                </div>
+
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-1">Nomor Pengajuan</label>
+                                    <p class="text-sm text-gray-900 font-mono">{{ $document->request_number ?? 'DOC-' . str_pad($document->id, 6, '0', STR_PAD_LEFT) }}</p>
+                                </div>
+
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-1">Dibuat</label>
+                                    <p class="text-sm text-gray-900">{{ $document->created_at ? $document->created_at->format('d/m/Y H:i') : '-' }}</p>
+                                </div>
+
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-1">Terakhir Update</label>
+                                    <p class="text-sm text-gray-900">{{ $document->updated_at ? $document->updated_at->format('d/m/Y H:i') : '-' }}</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
                     <!-- Applicant Information -->
                     <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                         <div class="p-6">
@@ -139,57 +167,59 @@
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                                 <div>
                                     <label class="block text-sm font-medium text-gray-700 mb-1">Nama Lengkap</label>
-                                    <p class="text-sm text-gray-900">{{ $document->full_name }}</p>
+                                    <p class="text-sm text-gray-900">{{ $document->applicant_name }}</p>
                                 </div>
 
                                 <div>
                                     <label class="block text-sm font-medium text-gray-700 mb-1">NIK</label>
-                                    <p class="text-sm text-gray-900">{{ $document->nik }}</p>
+                                    <p class="text-sm text-gray-900">{{ $document->applicant_nik }}</p>
                                 </div>
 
                                 <div>
                                     <label class="block text-sm font-medium text-gray-700 mb-1">Tempat, Tanggal Lahir</label>
-                                    <p class="text-sm text-gray-900">{{ $document->birth_place }}, {{ \Carbon\Carbon::parse($document->birth_date)->format('d F Y') }}</p>
+                                    <p class="text-sm text-gray-900">
+                                        {{ $document->applicant_birth_place ?? '-' }}@if($document->applicant_birth_date), {{ \Carbon\Carbon::parse($document->applicant_birth_date)->format('d F Y') }}@endif
+                                    </p>
                                 </div>
 
                                 <div>
                                     <label class="block text-sm font-medium text-gray-700 mb-1">Jenis Kelamin</label>
-                                    <p class="text-sm text-gray-900">{{ $document->gender === 'male' ? 'Laki-laki' : 'Perempuan' }}</p>
+                                    <p class="text-sm text-gray-900">{{ $document->applicant_gender ?? '-' }}</p>
                                 </div>
 
                                 <div>
                                     <label class="block text-sm font-medium text-gray-700 mb-1">Agama</label>
-                                    <p class="text-sm text-gray-900">{{ ucfirst($document->religion) }}</p>
+                                    <p class="text-sm text-gray-900">{{ $document->applicant_religion ? ucfirst($document->applicant_religion) : '-' }}</p>
                                 </div>
 
                                 <div>
                                     <label class="block text-sm font-medium text-gray-700 mb-1">Status Perkawinan</label>
-                                    <p class="text-sm text-gray-900">{{ ucfirst($document->marital_status) }}</p>
+                                    <p class="text-sm text-gray-900">{{ $document->applicant_marital_status ? ucfirst($document->applicant_marital_status) : '-' }}</p>
                                 </div>
 
                                 <div>
                                     <label class="block text-sm font-medium text-gray-700 mb-1">Pekerjaan</label>
-                                    <p class="text-sm text-gray-900">{{ $document->occupation }}</p>
+                                    <p class="text-sm text-gray-900">{{ $document->applicant_occupation ?? '-' }}</p>
                                 </div>
 
                                 <div>
                                     <label class="block text-sm font-medium text-gray-700 mb-1">Kewarganegaraan</label>
-                                    <p class="text-sm text-gray-900">{{ $document->nationality }}</p>
+                                    <p class="text-sm text-gray-900">{{ $document->applicant_nationality ?? '-' }}</p>
                                 </div>
 
                                 <div class="md:col-span-2">
                                     <label class="block text-sm font-medium text-gray-700 mb-1">Alamat</label>
-                                    <p class="text-sm text-gray-900">{{ $document->address }}</p>
+                                    <p class="text-sm text-gray-900">{{ $document->applicant_address ?? '-' }}</p>
                                 </div>
 
                                 <div>
                                     <label class="block text-sm font-medium text-gray-700 mb-1">Nomor Telepon</label>
-                                    <p class="text-sm text-gray-900">{{ $document->phone }}</p>
+                                    <p class="text-sm text-gray-900">{{ $document->applicant_phone ?? '-' }}</p>
                                 </div>
 
                                 <div>
                                     <label class="block text-sm font-medium text-gray-700 mb-1">Email</label>
-                                    <p class="text-sm text-gray-900">{{ $document->email ?? '-' }}</p>
+                                    <p class="text-sm text-gray-900">{{ $document->applicant_email ?? '-' }}</p>
                                 </div>
                             </div>
                         </div>
@@ -250,11 +280,11 @@
                                 </div>
                                 <div class="flex justify-between">
                                     <span class="text-gray-600">Dibuat:</span>
-                                    <span class="font-medium">{{ $document->created_at->format('d/m/Y H:i') }}</span>
+                                    <span class="font-medium">{{ $document->created_at ? $document->created_at->format('d/m/Y H:i') : '-' }}</span>
                                 </div>
                                 <div class="flex justify-between">
                                     <span class="text-gray-600">Terakhir Update:</span>
-                                    <span class="font-medium">{{ $document->updated_at->format('d/m/Y H:i') }}</span>
+                                    <span class="font-medium">{{ $document->updated_at ? $document->updated_at->format('d/m/Y H:i') : '-' }}</span>
                                 </div>
                                 @if($document->processor)
                                     <div class="flex justify-between">
@@ -288,7 +318,7 @@
 
             if (confirm(message)) {
                 fetch(`{{ route('admin.documents.updateStatus', $document) }}`, {
-                    method: 'PATCH',
+                    method: 'PUT',
                     headers: {
                         'Content-Type': 'application/json',
                         'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
@@ -315,7 +345,7 @@
             const notes = document.getElementById('processing_notes').value;
 
             fetch(`{{ route('admin.documents.updateStatus', $document) }}`, {
-                method: 'PATCH',
+                method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
                     'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')

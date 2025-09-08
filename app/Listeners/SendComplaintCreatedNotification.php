@@ -8,9 +8,9 @@ use App\Services\NotificationService;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
 
-class SendComplaintCreatedNotification implements ShouldQueue
+class SendComplaintCreatedNotification
 {
-    use InteractsWithQueue;
+    // use InteractsWithQueue;
 
     protected $notificationService;
 

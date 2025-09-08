@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Events\LetterRequestCreated;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
@@ -15,8 +16,16 @@ class LetterRequest extends Model
         'letter_type',
         'applicant_name',
         'applicant_nik',
+        'applicant_email',
         'applicant_address',
         'applicant_phone',
+        'applicant_birth_place',
+        'applicant_birth_date',
+        'applicant_gender',
+        'applicant_religion',
+        'applicant_marital_status',
+        'applicant_occupation',
+        'applicant_nationality',
         'purpose',
         'additional_data',
         'attachments',
@@ -33,6 +42,24 @@ class LetterRequest extends Model
         'processed_at' => 'datetime',
     ];
 
+    const LETTER_TYPES = [
+        'domisili' => 'Surat Keterangan Domisili',
+        'usaha' => 'Surat Keterangan Usaha',
+        'tidak_mampu' => 'Surat Keterangan Tidak Mampu',
+        'belum_menikah' => 'Surat Keterangan Belum Menikah',
+        'penghasilan' => 'Surat Keterangan Penghasilan',
+        'kelakuan_baik' => 'Surat Keterangan Kelakuan Baik',
+        'ahli_waris' => 'Surat Keterangan Ahli Waris',
+        'kematian' => 'Surat Keterangan Kematian',
+        'kehilangan' => 'Surat Keterangan Kehilangan',
+        'rekomendasi' => 'Surat Rekomendasi'
+    ];
+
+    public static function getLetterTypes()
+    {
+        return self::LETTER_TYPES;
+    }
+
     // Auto generate request number
     protected static function boot()
     {
@@ -43,6 +70,8 @@ class LetterRequest extends Model
                 $letterRequest->request_number = 'REQ-' . date('Ymd') . '-' . Str::upper(Str::random(6));
             }
         });
+        
+        // Event will be triggered manually in controller when needed
     }
 
     // Relasi

@@ -3,6 +3,7 @@
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\DocumentRequestController;
+use App\Http\Controllers\LetterRequestController;
 use App\Http\Controllers\ComplaintController;
 use App\Http\Controllers\TransparencyController;
 use App\Http\Controllers\User\UserDashboardController;
@@ -27,8 +28,13 @@ Route::post('/contact', [HomeController::class, 'sendContact'])->name('contact.s
 
 // Public document services
 Route::get('/services/documents', [DocumentRequestController::class, 'publicForm'])->name('services.documents');
+Route::post('/services/documents', [DocumentRequestController::class, 'publicStore'])->name('documents.public.store');
 Route::get('/services/track', [DocumentRequestController::class, 'track'])->name('services.track');
 Route::post('/services/track', [DocumentRequestController::class, 'track'])->name('services.track.search');
+
+// Public letter services
+Route::get('/services/letters', [LetterRequestController::class, 'publicForm'])->name('services.letters');
+Route::post('/services/letters', [LetterRequestController::class, 'publicStore'])->name('letters.public.store');
 
 // Public complaint services
 Route::get('/services/complaints', [ComplaintController::class, 'publicForm'])->name('services.complaints');
@@ -57,7 +63,10 @@ Route::middleware(['auth', 'role:user'])->group(function () {
     // Keep old route for backward compatibility
     Route::get('/dashboard', [UserDashboardController::class, 'index'])->name('dashboard');
 
-    // Profile routes moved to auth.php with auth. prefix
+    // Profile routes
+    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
     // Document requests for authenticated users
     Route::resource('documents', DocumentRequestController::class);
@@ -131,7 +140,6 @@ Route::middleware(['auth', 'role:staff'])->group(function () {
     });
 });
 
-
 // Admin dashboard
 Route::middleware(['auth', 'role:admin,super-admin'])->group(function () {
     Route::get('/admin/dashboard', function () {
@@ -145,6 +153,15 @@ Route::middleware(['auth', 'role:admin,super-admin'])->group(function () {
         Route::put('/{document}/status', [DocumentManagementController::class, 'updateStatus'])->name('updateStatus');
         Route::post('/bulk-update', [DocumentManagementController::class, 'bulkUpdate'])->name('bulk-update');
         Route::get('/export/csv', [DocumentManagementController::class, 'export'])->name('export');
+    });
+
+    // Letter management for admin
+    Route::prefix('admin/letters')->name('admin.letters.')->group(function () {
+        Route::get('/', [\App\Http\Controllers\Admin\LetterManagementController::class, 'index'])->name('index');
+        Route::get('/{letter}', [\App\Http\Controllers\Admin\LetterManagementController::class, 'show'])->name('show');
+        Route::post('/{letter}/status', [\App\Http\Controllers\Admin\LetterManagementController::class, 'updateStatus'])->name('update-status');
+        Route::post('/{letter}/assign', [\App\Http\Controllers\Admin\LetterManagementController::class, 'assign'])->name('assign');
+        Route::get('/export/csv', [\App\Http\Controllers\Admin\LetterManagementController::class, 'export'])->name('export');
     });
 
     // Complaint management for admin
@@ -206,7 +223,7 @@ Route::middleware(['auth', 'role:admin,super-admin'])->group(function () {
     Route::prefix('admin/document-requests')->name('admin.document-requests.')->group(function () {
         Route::get('/', [DocumentManagementController::class, 'index'])->name('index');
         Route::get('/{documentRequest}', [DocumentManagementController::class, 'show'])->name('show');
-        Route::put('/{documentRequest}/status', [DocumentManagementController::class, 'updateStatus'])->name('update-status');
+        Route::put('/{documentRequest}/status', [DocumentManagementController::class, 'updateStatus'])->name('updateStatus');
         Route::put('/{documentRequest}/assign', [DocumentManagementController::class, 'assign'])->name('assign');
         Route::post('/{documentRequest}/notes', [DocumentManagementController::class, 'saveNotes'])->name('save-notes');
         Route::delete('/{documentRequest}', [DocumentManagementController::class, 'destroy'])->name('destroy');

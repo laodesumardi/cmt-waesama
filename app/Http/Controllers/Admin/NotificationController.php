@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Notification;
+use App\Models\User;
 use App\Services\NotificationService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -46,10 +47,14 @@ class NotificationController extends Controller
         $unreadCount = $this->notificationService->getUnreadCount($user->id);
 
         $stats = [
-            'total' => Notification::forUser($user->id)->count(),
+            'total' => Notification::where('notifiable_id', $user->id)
+                ->where('notifiable_type', User::class)->count(),
             'unread' => $unreadCount,
-            'read' => Notification::forUser($user->id)->read()->count(),
-            'today' => Notification::forUser($user->id)
+            'read' => Notification::where('notifiable_id', $user->id)
+                ->where('notifiable_type', User::class)
+                ->whereNotNull('read_at')->count(),
+            'today' => Notification::where('notifiable_id', $user->id)
+                ->where('notifiable_type', User::class)
                 ->whereDate('created_at', today())->count(),
         ];
 
@@ -75,14 +80,19 @@ class NotificationController extends Controller
 
         return response()->json([
             'notifications' => $notifications->map(function ($notification) {
+                $data = json_decode($notification->data, true) ?? [];
                 return [
                     'id' => $notification->id,
                     'type' => $notification->type,
-                    'data' => $notification->data,
+                    'title' => $notification->title,
+                    'message' => $notification->message,
+                    'data' => $data,
+                    'action_url' => $notification->action_url,
                     'priority' => $notification->priority,
                     'is_read' => $notification->isRead(),
-                    'time_ago' => $notification->time_ago,
+                    'read_at' => $notification->read_at,
                     'created_at' => $notification->created_at->toISOString(),
+                    'time_ago' => $notification->created_at->diffForHumans(),
                 ];
             }),
             'unread_count' => $unreadCount,

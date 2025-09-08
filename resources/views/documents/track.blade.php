@@ -116,7 +116,7 @@
                                                 <div class="flex items-center text-sm">
                                                     <div class="w-2 h-2 bg-blue-500 rounded-full mr-3"></div>
                                                     <span class="text-gray-600">Diajukan:</span>
-                                                    <span class="ml-2 text-gray-900">{{ $document->created_at->format('d M Y, H:i') }}</span>
+                                                    <span class="ml-2 text-gray-900">{{ $document->created_at ? $document->created_at->format('d M Y, H:i') : '-' }}</span>
                                                 </div>
                                                 @if($document->processed_at)
                                                     <div class="flex items-center text-sm">

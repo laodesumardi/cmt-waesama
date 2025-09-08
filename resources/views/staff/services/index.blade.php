@@ -232,7 +232,7 @@
                                             </span>
                                         </td>
                                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                                            {{ $request->created_at->format('d/m/Y H:i') }}
+                                            {{ $request->created_at ? $request->created_at->format('d/m/Y H:i') : '-' }}
                                         </td>
                                         <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
                                             <div class="flex space-x-2">
@@ -283,7 +283,7 @@
     <script>
         function updateStatus(requestId, status) {
             if (confirm('Apakah Anda yakin ingin mengubah status permohonan ini?')) {
-                fetch(`/staff/services/${requestId}/update-status`, {
+                fetch(`/staff/services/${requestId}/status`, {
                     method: 'PUT',
                     headers: {
                         'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),

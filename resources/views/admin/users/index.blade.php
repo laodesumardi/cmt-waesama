@@ -214,7 +214,7 @@
                                         <span class="bg-red-100 text-red-800 px-2 py-1 rounded-full text-xs font-medium">Nonaktif</span>
                                     @endif
                                 </td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ $user->created_at->format('d M Y') }}</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ $user->created_at ? $user->created_at->format('d M Y') : '-' }}</td>
                                 <td class="px-6 py-4 whitespace-nowrap text-center">
                                     <div class="flex justify-center space-x-2">
                                         <a href="{{ route('admin.users.show', $user) }}" class="text-blue-600 hover:text-blue-900 transition-colors duration-200" title="Lihat Detail">
