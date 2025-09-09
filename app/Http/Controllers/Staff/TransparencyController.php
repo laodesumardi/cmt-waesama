@@ -96,6 +96,7 @@ class TransparencyController extends Controller
         $transparency->fill($request->except(['files', 'data']));
         $transparency->created_by = Auth::id();
         $transparency->updated_by = Auth::id();
+        $transparency->uploaded_by = Auth::id();
         
         if ($request->status === 'published') {
             $transparency->published_at = now();
