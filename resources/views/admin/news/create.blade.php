@@ -141,10 +141,10 @@
                             <button type="button" class="inline-flex items-center px-4 py-2 bg-gray-500 hover:bg-gray-600 text-white font-medium rounded-md transition-colors duration-200" onclick="history.back()">
                                 <i class="fas fa-times mr-2"></i> Batal
                             </button>
-                            <button type="submit" name="action" value="draft" class="inline-flex items-center px-4 py-2 bg-yellow-600 hover:bg-yellow-700 text-white font-medium rounded-md transition-colors duration-200">
+                            <button type="submit" id="draftBtn" name="action" value="draft" class="inline-flex items-center px-4 py-2 bg-yellow-600 hover:bg-yellow-700 text-white font-medium rounded-md transition-colors duration-200">
                                 <i class="fas fa-save mr-2"></i> Simpan sebagai Draft
                             </button>
-                            <button type="submit" name="action" value="publish" class="inline-flex items-center px-4 py-2 bg-[#14213d] hover:bg-[#0f1a2e] text-white font-medium rounded-md transition-colors duration-200">
+                            <button type="submit" id="publishBtn" name="action" value="publish" class="inline-flex items-center px-4 py-2 bg-[#14213d] hover:bg-[#0f1a2e] text-white font-medium rounded-md transition-colors duration-200">
                                 <i class="fas fa-paper-plane mr-2"></i> Publikasikan
                             </button>
                         </div>
@@ -405,13 +405,32 @@ $('#excerpt').on('input', function() {
 // Form validation
 $('form').submit(function(e) {
     let isValid = true;
+    let errorMessage = '';
     
     // Check required fields
     const requiredFields = ['title', 'content', 'category'];
+    const fieldLabels = {
+        'title': 'Judul',
+        'content': 'Konten',
+        'category': 'Kategori'
+    };
+    
+    const missingFields = [];
+    
     requiredFields.forEach(function(field) {
         const input = $(`[name="${field}"]`);
-        if (!input.val().trim()) {
+        let value = '';
+        
+        if (field === 'content') {
+            // For content field, get value from editor
+            value = window.editor ? window.editor.getData() : input.val();
+        } else {
+            value = input.val();
+        }
+        
+        if (!value || !value.trim()) {
             input.addClass('is-invalid');
+            missingFields.push(fieldLabels[field]);
             isValid = false;
         } else {
             input.removeClass('is-invalid');
@@ -420,7 +439,23 @@ $('form').submit(function(e) {
     
     if (!isValid) {
         e.preventDefault();
-        alert('Mohon lengkapi semua field yang wajib diisi.');
+        errorMessage = 'Mohon lengkapi field berikut sebelum menyimpan data:\n\n' + missingFields.join('\n');
+        alert(errorMessage);
+        
+        // Focus on first missing field
+        const firstMissingField = requiredFields.find(field => {
+            const input = $(`[name="${field}"]`);
+            let value = field === 'content' ? (window.editor ? window.editor.getData() : input.val()) : input.val();
+            return !value || !value.trim();
+        });
+        
+        if (firstMissingField) {
+            if (firstMissingField === 'content' && window.editor) {
+                window.editor.focus();
+            } else {
+                $(`[name="${firstMissingField}"]`).focus();
+            }
+        }
     }
 });
 

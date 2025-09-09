@@ -84,7 +84,7 @@ class NewsController extends Controller
             'excerpt' => 'nullable|string|max:500',
             'content' => 'required|string',
             'category' => 'required|in:' . implode(',', array_keys(News::getCategories())),
-            'status' => 'required|in:draft,published',
+            'action' => 'required|in:draft,publish',
             'is_featured' => 'boolean',
             'featured_image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
             'gallery_images.*' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
@@ -93,6 +93,10 @@ class NewsController extends Controller
             'meta_description' => 'nullable|string|max:500',
             'tags' => 'nullable|string',
         ]);
+
+        // Set status based on action parameter
+        $validated['status'] = $validated['action'] === 'publish' ? 'published' : 'draft';
+        unset($validated['action']); // Remove action from validated data
 
         // Generate slug
         $validated['slug'] = Str::slug($validated['title']);
@@ -173,7 +177,7 @@ class NewsController extends Controller
             'excerpt' => 'nullable|string|max:500',
             'content' => 'required|string',
             'category' => 'required|in:' . implode(',', array_keys(News::getCategories())),
-            'status' => 'required|in:draft,published',
+            'action' => 'required|in:draft,publish',
             'is_featured' => 'boolean',
             'featured_image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
             'gallery_images.*' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
@@ -184,6 +188,10 @@ class NewsController extends Controller
             'remove_featured_image' => 'boolean',
             'remove_gallery_images' => 'array',
         ]);
+
+        // Set status based on action parameter
+        $validated['status'] = $validated['action'] === 'publish' ? 'published' : 'draft';
+        unset($validated['action']); // Remove action from validated data
 
         // Update slug jika title berubah
         if ($news->title !== $validated['title']) {
