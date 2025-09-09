@@ -40,8 +40,14 @@
                             <a href="{{ route('news.index') }}" class="{{ request()->routeIs('news.*') ? 'text-white border-b-2 border-[#14213d]' : 'text-gray-200 hover:text-white' }} px-3 py-2 text-sm font-medium transition-colors duration-150">
                                 Berita
                             </a>
+                            <a href="{{ route('villages') }}" class="{{ request()->routeIs('villages') ? 'text-white border-b-2 border-[#14213d]' : 'text-gray-200 hover:text-white' }} px-3 py-2 text-sm font-medium transition-colors duration-150">
+                                Desa-Desa
+                            </a>
                             <a href="{{ route('gallery.index') }}" class="{{ request()->routeIs('gallery.*') ? 'text-white border-b-2 border-[#14213d]' : 'text-gray-200 hover:text-white' }} px-3 py-2 text-sm font-medium transition-colors duration-150">
                                 Galeri
+                            </a>
+                            <a href="{{ route('project.identity') }}" class="{{ request()->routeIs('project.identity') ? 'text-white border-b-2 border-[#14213d]' : 'text-gray-200 hover:text-white' }} px-3 py-2 text-sm font-medium transition-colors duration-150">
+                                Identitas Project
                             </a>
                             <a href="{{ route('about') }}" class="{{ request()->routeIs('about') ? 'text-white border-b-2 border-[#14213d]' : 'text-gray-200 hover:text-white' }} px-3 py-2 text-sm font-medium transition-colors duration-150">
                                 Tentang
@@ -89,8 +95,14 @@
                     <a href="{{ route('news.index') }}" class="{{ request()->routeIs('news.*') ? 'bg-[#14213d] text-white' : 'text-gray-200 hover:bg-[#14213d] hover:text-white' }} block px-3 py-2 text-base font-medium rounded-md">
                         Berita
                     </a>
+                    <a href="{{ route('villages') }}" class="{{ request()->routeIs('villages') ? 'bg-[#14213d] text-white' : 'text-gray-200 hover:bg-[#14213d] hover:text-white' }} block px-3 py-2 text-base font-medium rounded-md">
+                        Desa-Desa
+                    </a>
                     <a href="{{ route('gallery.index') }}" class="{{ request()->routeIs('gallery.*') ? 'bg-[#14213d] text-white' : 'text-gray-200 hover:bg-[#14213d] hover:text-white' }} block px-3 py-2 text-base font-medium rounded-md">
                         Galeri
+                    </a>
+                    <a href="{{ route('project.identity') }}" class="{{ request()->routeIs('project.identity') ? 'bg-[#14213d] text-white' : 'text-gray-200 hover:bg-[#14213d] hover:text-white' }} block px-3 py-2 text-base font-medium rounded-md">
+                        Identitas Project
                     </a>
                     <a href="{{ route('about') }}" class="{{ request()->routeIs('about') ? 'bg-[#14213d] text-white' : 'text-gray-200 hover:bg-[#14213d] hover:text-white' }} block px-3 py-2 text-base font-medium rounded-md">
                         Tentang

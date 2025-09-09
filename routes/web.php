@@ -26,6 +26,17 @@ Route::get('/about', [HomeController::class, 'about'])->name('about');
 Route::get('/contact', [HomeController::class, 'contact'])->name('contact');
 Route::post('/contact', [HomeController::class, 'sendContact'])->name('contact.send');
 
+// Project identity and villages
+Route::get('/project-identity', function () {
+    return view('project-identity');
+})->name('project.identity');
+Route::get('/villages', function () {
+    return view('villages');
+})->name('villages');
+Route::get('/villages/{village}', function ($village) {
+    return view('village-detail', compact('village'));
+})->name('village.detail');
+
 // Public document services
 Route::get('/services/documents', [DocumentRequestController::class, 'publicForm'])->name('services.documents');
 Route::post('/services/documents', [DocumentRequestController::class, 'publicStore'])->name('documents.public.store');
