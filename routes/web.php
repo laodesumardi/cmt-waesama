@@ -46,7 +46,7 @@ Route::post('/services/complaints/track', [ComplaintController::class, 'track'])
 Route::prefix('transparency')->name('transparency.')->group(function () {
     Route::get('/', [TransparencyController::class, 'index'])->name('index');
     Route::get('/{transparency}', [TransparencyController::class, 'show'])->name('show');
-    Route::get('/{transparency}/download', [TransparencyController::class, 'download'])->name('download');
+    Route::get('/{transparency}/download/{fileIndex?}', [TransparencyController::class, 'download'])->name('download');
     Route::get('/budget/overview', [TransparencyController::class, 'budget'])->name('budget');
     Route::get('/procurement/list', [TransparencyController::class, 'procurement'])->name('procurement');
     Route::get('/projects/list', [TransparencyController::class, 'projects'])->name('projects');

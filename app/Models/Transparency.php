@@ -4,6 +4,8 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Validation\ValidationException;
+use Illuminate\Support\Facades\Validator;
 
 class Transparency extends Model
 {
@@ -42,6 +44,35 @@ class Transparency extends Model
         'views' => 'integer',
         'downloads' => 'integer',
     ];
+
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::saving(function ($model) {
+            $model->validateModel();
+        });
+    }
+
+    public function validateModel()
+    {
+        $rules = [
+            'title' => 'required|string|max:255',
+            'category' => 'required|in:budget,procurement,project,regulation,report,other',
+            'type' => 'required|in:document,data,announcement',
+            'status' => 'required|in:draft,published',
+            'period_start' => 'nullable|date',
+            'period_end' => 'nullable|date|after_or_equal:period_start',
+            'amount' => 'nullable|numeric|min:0',
+            'is_featured' => 'boolean',
+        ];
+
+        $validator = Validator::make($this->attributes, $rules);
+
+        if ($validator->fails()) {
+            throw new ValidationException($validator);
+        }
+    }
 
     // Relasi
     public function creator()

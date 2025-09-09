@@ -146,11 +146,19 @@ class TransparencyController extends Controller
             abort(404);
         }
         
-        if (!$transparency->files || !isset($transparency->files[$fileIndex])) {
+        if (!$transparency->files) {
             abort(404);
         }
         
-        $filePath = $transparency->files[$fileIndex];
+        // Handle files as JSON string or array
+        $files = is_string($transparency->files) ? json_decode($transparency->files, true) : $transparency->files;
+        
+        if (!$files || !isset($files[$fileIndex])) {
+            abort(404);
+        }
+        
+        // Get file path - handle both old and new file structure
+        $filePath = isset($files[$fileIndex]['path']) ? $files[$fileIndex]['path'] : $files[$fileIndex];
         
         if (!Storage::disk('public')->exists($filePath)) {
             abort(404);
@@ -159,7 +167,10 @@ class TransparencyController extends Controller
         // Increment downloads
         $transparency->incrementDownloads();
         
-        return Storage::disk('public')->download($filePath);
+        // Get original filename if available
+        $originalName = isset($files[$fileIndex]['name']) ? $files[$fileIndex]['name'] : basename($filePath);
+        
+        return Storage::disk('public')->download($filePath, $originalName);
     }
     
     /**

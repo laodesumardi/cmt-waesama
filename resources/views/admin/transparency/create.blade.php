@@ -444,6 +444,83 @@ document.getElementById('files').addEventListener('change', function() {
     }
 });
 
+// Form validation
+document.getElementById('transparencyForm').addEventListener('submit', function(e) {
+    const requiredFields = [
+        { id: 'title', name: 'Judul' },
+        { id: 'category', name: 'Kategori' },
+        { id: 'type', name: 'Tipe' }
+    ];
+    
+    let isValid = true;
+    let errorMessages = [];
+    
+    // Check required fields
+    requiredFields.forEach(field => {
+        const element = document.getElementById(field.id);
+        const value = element.value.trim();
+        
+        if (!value) {
+            isValid = false;
+            errorMessages.push(field.name + ' harus diisi');
+            element.classList.add('border-red-500');
+        } else {
+            element.classList.remove('border-red-500');
+        }
+    });
+    
+    // Validate JSON if provided
+    const dataField = document.getElementById('data');
+    const dataValue = dataField.value.trim();
+    if (dataValue) {
+        try {
+            JSON.parse(dataValue);
+        } catch (e) {
+            isValid = false;
+            errorMessages.push('Format JSON tidak valid');
+            dataField.classList.add('border-red-500');
+        }
+    }
+    
+    // Validate period dates
+    const periodStart = document.getElementById('period_start').value;
+    const periodEnd = document.getElementById('period_end').value;
+    
+    if (periodStart && periodEnd && new Date(periodStart) > new Date(periodEnd)) {
+        isValid = false;
+        errorMessages.push('Tanggal mulai tidak boleh lebih besar dari tanggal selesai');
+        document.getElementById('period_end').classList.add('border-red-500');
+    }
+    
+    if (!isValid) {
+        e.preventDefault();
+        
+        // Show error alert
+        const errorMessage = 'Mohon perbaiki kesalahan berikut:\n\n' + errorMessages.join('\n');
+        alert(errorMessage);
+        
+        // Scroll to first error field
+        const firstErrorField = document.querySelector('.border-red-500');
+        if (firstErrorField) {
+            firstErrorField.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            firstErrorField.focus();
+        }
+        
+        return false;
+    }
+    
+    // Set status based on button clicked
+    const clickedButton = e.submitter;
+    if (clickedButton && clickedButton.name === 'action') {
+        const statusField = document.getElementById('status');
+        if (clickedButton.value === 'draft') {
+            statusField.value = 'draft';
+        } else if (clickedButton.value === 'publish') {
+            statusField.value = 'published';
+        }
+    }
+});
+
 // Initialize preview
 updatePreview();
 </script>
