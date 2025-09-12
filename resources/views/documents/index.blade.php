@@ -101,7 +101,7 @@
                                                 {{ $document->document_type_label }}
                                             </td>
                                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                                                {{ $document->created_at->format('d/m/Y H:i') }}
+                                                {{ $document->created_at ? $document->created_at->format('d/m/Y H:i') : '-' }}
                                             </td>
                                             <td class="px-6 py-4 whitespace-nowrap">
                                                 @php

@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Controllers\Controller;
 use App\Models\DocumentRequest;
 use App\Events\DocumentRequestCreated;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule;
 
 class DocumentRequestController extends Controller
@@ -76,13 +78,45 @@ class DocumentRequestController extends Controller
             'applicant_name' => 'required|string|max:255',
             'applicant_nik' => 'required|string|size:16|regex:/^[0-9]+$/',
             'applicant_phone' => 'required|string|max:20',
+            'applicant_email' => 'nullable|email|max:255',
             'applicant_address' => 'required|string|max:500',
+            'applicant_birth_place' => 'required|string|max:255',
+            'applicant_birth_date' => 'required|date|before:today',
+            'applicant_gender' => 'required|in:Laki-laki,Perempuan',
+            'applicant_religion' => 'required|in:Islam,Kristen,Katolik,Hindu,Buddha,Konghucu',
+            'applicant_marital_status' => 'required|in:Belum Kawin,Kawin,Cerai Hidup,Cerai Mati',
+            'applicant_occupation' => 'required|string|max:255',
+            'applicant_nationality' => 'required|in:WNI,WNA',
             'additional_data' => 'nullable|array'
         ]);
 
         $validated['user_id'] = Auth::id();
+        
+        // Use database transaction to ensure unique request number
+        $documentRequest = DB::transaction(function () use ($validated) {
+            // Generate unique request number
+            $today = date('Ymd');
+            $prefix = 'DOC-' . $today . '-';
+            
+            // Find the highest existing number for today with row lock
+            $lastRequest = DocumentRequest::where('request_number', 'like', $prefix . '%')
+                ->orderBy('request_number', 'desc')
+                ->lockForUpdate()
+                ->first();
+                
+            if ($lastRequest) {
+                // Extract the number part and increment
+                $lastNumber = (int) substr($lastRequest->request_number, -4);
+                $nextNumber = $lastNumber + 1;
+            } else {
+                // First request of the day
+                $nextNumber = 1;
+            }
+            
+            $validated['request_number'] = $prefix . str_pad($nextNumber, 4, '0', STR_PAD_LEFT);
 
-        $documentRequest = DocumentRequest::create($validated);
+            return DocumentRequest::create($validated);
+        });
 
         // Trigger event
         event(new DocumentRequestCreated($documentRequest));
@@ -221,5 +255,37 @@ class DocumentRequestController extends Controller
         ];
 
         return view('documents.status', compact('documents', 'stats'));
+    }
+
+    /**
+     * Store public document request
+     */
+    public function publicStore(Request $request)
+    {
+        $validated = $request->validate([
+            'document_type' => ['required', Rule::in(array_keys(DocumentRequest::DOCUMENT_TYPES))],
+            'purpose' => 'required|string|max:1000',
+            'applicant_name' => 'required|string|max:255',
+            'applicant_nik' => 'required|string|size:16|regex:/^[0-9]+$/',
+            'applicant_phone' => 'required|string|max:20',
+            'applicant_address' => 'required|string|max:500',
+            'applicant_birth_place' => 'required|string|max:255',
+            'applicant_birth_date' => 'required|date|before:today',
+            'applicant_gender' => 'required|in:Laki-laki,Perempuan',
+            'applicant_religion' => 'required|in:Islam,Kristen,Katolik,Hindu,Buddha,Konghucu',
+            'applicant_occupation' => 'required|string|max:255',
+            'additional_data' => 'nullable|array'
+        ]);
+
+        // For public requests, user_id can be null or set to a guest user
+        $validated['user_id'] = Auth::id(); // Will be null if not authenticated
+
+        $documentRequest = DocumentRequest::create($validated);
+
+        // Trigger event
+        event(new DocumentRequestCreated($documentRequest));
+
+        return redirect()->route('services.documents')
+                        ->with('success', 'Pengajuan dokumen berhasil dikirim. Kami akan memproses dalam 1-3 hari kerja.');
     }
 }

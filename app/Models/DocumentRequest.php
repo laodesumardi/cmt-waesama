@@ -12,12 +12,21 @@ class DocumentRequest extends Model
 
     protected $fillable = [
         'user_id',
+        'request_number',
         'document_type',
         'purpose',
         'applicant_name',
         'applicant_nik',
         'applicant_phone',
+        'applicant_email',
         'applicant_address',
+        'applicant_birth_place',
+        'applicant_birth_date',
+        'applicant_gender',
+        'applicant_religion',
+        'applicant_marital_status',
+        'applicant_occupation',
+        'applicant_nationality',
         'additional_data',
         'status',
         'notes',
@@ -29,6 +38,7 @@ class DocumentRequest extends Model
 
     protected $casts = [
         'additional_data' => 'array',
+        'applicant_birth_date' => 'date',
         'processed_at' => 'datetime',
         'completed_at' => 'datetime'
     ];
@@ -105,6 +115,9 @@ class DocumentRequest extends Model
      */
     public function getDocumentTypeLabelAttribute(): string
     {
+        if ($this->document_type === null) {
+            return 'Tidak Diketahui';
+        }
         return self::DOCUMENT_TYPES[$this->document_type] ?? $this->document_type;
     }
 

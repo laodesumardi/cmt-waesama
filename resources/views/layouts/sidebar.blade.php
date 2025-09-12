@@ -270,11 +270,13 @@
                         <!-- User Profile Dropdown -->
                         <div x-data="{ open: false }" class="relative">
                             <button @click="open = !open" class="flex items-center space-x-2 text-gray-700 hover:text-[#14213d] transition-colors duration-200">
-                                <div class="w-8 h-8 bg-[#14213d] rounded-full flex items-center justify-center">
-                                    <svg class="h-4 w-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
-                                    </svg>
-                                </div>
+                                @if(Auth::user()->avatar)
+                                    <img src="{{ asset('storage/' . Auth::user()->avatar) }}" alt="Avatar" class="w-8 h-8 rounded-full object-cover border-2 border-[#14213d]">
+                                @else
+                                    <div class="w-8 h-8 bg-gradient-to-br from-[#14213d] to-[#1e3a8a] rounded-full flex items-center justify-center text-white font-semibold text-sm">
+                                        {{ strtoupper(substr(Auth::user()->name, 0, 1)) }}
+                                    </div>
+                                @endif
                                 <span class="font-medium text-sm hidden md:block">{{ Auth::user()->name }}</span>
                                 <svg class="h-4 w-4 transform transition-transform duration-200" :class="{'rotate-180': open}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>

@@ -1,50 +1,50 @@
+
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+<html lang="en">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="csrf-token" content="{{ csrf_token() }}">
-
-    <title>{{ $title ?? 'Website Kecamatan' }}</title>
+    <meta name="csrf-token" content="csrf_token_here">
+    <title>Website Kecamatan</title>
 
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
 
-    <!-- Scripts -->
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
-    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
     <!-- Additional Styles -->
     <style>
         .hero-gradient {
             background: linear-gradient(135deg, #001d3d 0%, #003566 50%, #0077b6 100%);
         }
-        
+
         .text-gradient {
             background: linear-gradient(135deg, #001d3d, #0077b6);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
         }
-        
+
         .card-hover {
             transition: all 0.3s ease;
         }
-        
+
         .card-hover:hover {
             transform: translateY(-5px);
             box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
         }
-        
+
         .navbar-blur {
             backdrop-filter: blur(10px);
             background-color: rgba(255, 255, 255, 0.95);
         }
-        
+
         .fade-in-up {
             animation: fadeInUp 0.6s ease-out;
         }
-        
+
         @keyframes fadeInUp {
             from {
                 opacity: 0;
@@ -55,46 +55,46 @@
                 transform: translateY(0);
             }
         }
-        
+
         /* Mobile Menu Animations */
         .mobile-menu {
             transition: max-height 0.3s ease-in-out;
             overflow: hidden;
         }
-        
+
         .mobile-dropdown-content {
             transition: all 0.3s ease;
         }
-        
+
         .mobile-dropdown-arrow {
             transition: transform 0.3s ease;
         }
-        
+
         /* Smooth scrolling for mobile menu */
         .mobile-menu::-webkit-scrollbar {
             width: 4px;
         }
-        
+
         .mobile-menu::-webkit-scrollbar-track {
             background: #f1f1f1;
         }
-        
+
         .mobile-menu::-webkit-scrollbar-thumb {
             background: #c1c1c1;
             border-radius: 2px;
         }
-        
+
         .mobile-menu::-webkit-scrollbar-thumb:hover {
             background: #a1a1a1;
         }
-        
+
         /* Active state styling */
         .mobile-menu a.active {
             background: linear-gradient(135deg, #14213d 0%, #1a2a4a 100%);
             color: white;
             border-left: 4px solid #fbbf24;
         }
-        
+
         /* Touch-friendly sizing */
         @media (max-width: 768px) {
             .mobile-menu a, .mobile-menu button {
@@ -102,11 +102,99 @@
                 display: flex;
                 align-items: center;
             }
+
+            /* Ensure mobile menu is properly positioned */
+            .mobile-menu {
+                position: relative;
+                z-index: 40;
+            }
+
+            /* Fix dropdown content positioning */
+            .mobile-dropdown-content {
+                position: relative;
+                z-index: 41;
+            }
+
+            /* Mobile menu button positioning */
+            .mobile-menu-button {
+                z-index: 50;
+                position: relative;
+            }
         }
-        
+
+        /* Extra small screens - phones in portrait */
+        @media (max-width: 480px) {
+            .mobile-menu {
+                position: fixed;
+                top: 64px;
+                left: 0;
+                right: 0;
+                z-index: 9999;
+                background: white;
+                border-top: 1px solid #e5e7eb;
+                box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            }
+
+            .mobile-dropdown-content {
+                position: relative;
+                z-index: 10000;
+                background: white;
+            }
+
+            .mobile-menu-button {
+                z-index: 10001;
+                position: relative;
+            }
+
+            /* Ensure dropdown toggles are clickable */
+            .mobile-dropdown-toggle {
+                position: relative;
+                z-index: 9999;
+                background: white;
+            }
+
+            /* Fix navbar positioning */
+             nav {
+                 z-index: 9998;
+             }
+
+             /* Ensure dropdown content is visible and properly styled */
+             .mobile-dropdown-content {
+                 max-height: none;
+                 overflow: visible;
+                 margin-top: 4px;
+                 padding: 8px 0;
+                 border-radius: 6px;
+                 box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+             }
+
+             /* Make dropdown items more touch-friendly */
+             .mobile-dropdown-content a {
+                 min-height: 44px;
+                 padding: 12px 16px;
+                 display: flex;
+                 align-items: center;
+             }
+         }
+
         /* Prevent body scroll when menu is open */
         body.mobile-menu-open {
             overflow: hidden;
+        }
+
+        /* Ensure mobile menu button is clickable */
+        .mobile-menu-button {
+            z-index: 50;
+            position: relative;
+        }
+
+        /* Ensure dropdown works properly */
+        .mobile-dropdown-content.show {
+            display: block !important;
+        }
+
+        .mobile-dropdown-content.hide {
+            display: none !important;
         }
     </style>
 </head>
@@ -207,21 +295,21 @@
                     </svg>
                     Beranda
                 </a>
-                
+
                 <a href="{{ route('news.index') }}" class="flex items-center px-3 py-3 text-base font-medium text-gray-700 hover:text-[#14213d] hover:bg-gray-50 rounded-lg transition-all duration-200 {{ request()->routeIs('news*') ? 'text-[#14213d] bg-gray-50 border-l-4 border-[#14213d]' : '' }}">
                     <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"></path>
                     </svg>
                     Berita
                 </a>
-                
+
                 <a href="{{ route('gallery') }}" class="flex items-center px-3 py-3 text-base font-medium text-gray-700 hover:text-[#14213d] hover:bg-gray-50 rounded-lg transition-all duration-200 {{ request()->routeIs('gallery*') ? 'text-[#14213d] bg-gray-50 border-l-4 border-[#14213d]' : '' }}">
                     <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
                     </svg>
                     Galeri
                 </a>
-                
+
                 <!-- Transparansi Dropdown -->
                 <div class="mobile-dropdown">
                     <button class="mobile-dropdown-toggle flex items-center justify-between w-full px-3 py-3 text-base font-medium text-gray-700 hover:text-[#14213d] hover:bg-gray-50 rounded-lg transition-all duration-200 {{ request()->routeIs('transparency*') ? 'text-[#14213d] bg-gray-50 border-l-4 border-[#14213d]' : '' }}">
@@ -244,14 +332,14 @@
                         <a href="{{ route('transparency.reports') }}" class="flex items-center px-3 py-2 text-sm text-gray-600 hover:text-[#14213d] hover:bg-gray-50 rounded-md transition-colors">Laporan</a>
                     </div>
                 </div>
-                
+
                 <a href="{{ route('about') }}" class="flex items-center px-3 py-3 text-base font-medium text-gray-700 hover:text-[#14213d] hover:bg-gray-50 rounded-lg transition-all duration-200 {{ request()->routeIs('about') ? 'text-[#14213d] bg-gray-50 border-l-4 border-[#14213d]' : '' }}">
                     <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                     </svg>
                     Tentang
                 </a>
-                
+
                 <!-- Layanan Dropdown -->
                 <div class="mobile-dropdown">
                     <button class="mobile-dropdown-toggle flex items-center justify-between w-full px-3 py-3 text-base font-medium text-gray-700 hover:text-[#14213d] hover:bg-gray-50 rounded-lg transition-all duration-200">
@@ -272,14 +360,14 @@
                         <a href="{{ route('complaints.track') }}" class="flex items-center px-3 py-2 text-sm text-gray-600 hover:text-[#14213d] hover:bg-gray-50 rounded-md transition-colors">Lacak Pengaduan</a>
                     </div>
                 </div>
-                
+
                 <a href="{{ route('contact') }}" class="flex items-center px-3 py-3 text-base font-medium text-gray-700 hover:text-[#14213d] hover:bg-gray-50 rounded-lg transition-all duration-200 {{ request()->routeIs('contact*') ? 'text-[#14213d] bg-gray-50 border-l-4 border-[#14213d]' : '' }}">
                     <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 4.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
                     </svg>
                     Kontak
                 </a>
-                
+
                 <div class="border-t border-gray-200 pt-4 pb-3 mt-4">
                     @auth
                         <a href="{{ route('dashboard') }}" class="flex items-center px-3 py-3 text-base font-medium bg-[#14213d] text-white rounded-lg hover:bg-[#1a2a4a] transition-colors">
@@ -400,133 +488,244 @@
 
     <!-- Mobile Menu Script -->
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
+        // Global variables to track event handlers
+        let mobileMenuInitialized = false;
+        let dropdownHandlers = {
+            click: null,
+            touchend: null,
+            touchstart: null
+        };
+
+        // Initialize mobile menu functionality
+        function initializeMobileMenu() {
+            if (mobileMenuInitialized) {
+                console.log('Mobile menu already initialized');
+                return;
+            }
+
+            console.log('Initializing mobile menu...');
+
             const mobileMenuButton = document.querySelector('.mobile-menu-button');
             const mobileMenu = document.querySelector('.mobile-menu');
             const hamburgerLine1 = document.querySelector('.hamburger-line-1');
             const hamburgerLine2 = document.querySelector('.hamburger-line-2');
 
+            if (!mobileMenuButton || !mobileMenu) {
+                console.error('Mobile menu elements not found, retrying in 100ms...');
+                setTimeout(initializeMobileMenu, 100);
+                return;
+            }
+
+            console.log('Mobile menu elements found successfully');
+
             // Toggle mobile menu
-            if (mobileMenuButton && mobileMenu) {
-                mobileMenuButton.addEventListener('click', function() {
-                    const isHidden = mobileMenu.classList.contains('hidden');
-                    
-                    if (isHidden) {
-                        // Show menu
-                        mobileMenu.classList.remove('hidden');
-                        mobileMenu.style.maxHeight = mobileMenu.scrollHeight + 'px';
-                        document.body.classList.add('mobile-menu-open');
-                        
-                        // Animate hamburger to X
-                        hamburgerLine1.classList.add('hidden');
-                        hamburgerLine2.classList.remove('hidden');
-                    } else {
-                        // Hide menu
+            mobileMenuButton.addEventListener('click', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                console.log('Mobile menu button clicked');
+
+                const isHidden = mobileMenu.classList.contains('hidden');
+
+                if (isHidden) {
+                    // Show menu
+                    mobileMenu.classList.remove('hidden');
+                    mobileMenu.style.maxHeight = mobileMenu.scrollHeight + 'px';
+                    document.body.classList.add('mobile-menu-open');
+
+                    // Animate hamburger to X
+                    if (hamburgerLine1) hamburgerLine1.classList.add('hidden');
+                    if (hamburgerLine2) hamburgerLine2.classList.remove('hidden');
+                } else {
+                    // Hide menu
+                    mobileMenu.style.maxHeight = '0';
+                    document.body.classList.remove('mobile-menu-open');
+                    setTimeout(() => {
+                        mobileMenu.classList.add('hidden');
+                    }, 300);
+
+                    // Animate X to hamburger
+                    if (hamburgerLine1) hamburgerLine1.classList.remove('hidden');
+                    if (hamburgerLine2) hamburgerLine2.classList.add('hidden');
+                }
+            });
+
+            // Add touch event for mobile menu button
+            mobileMenuButton.addEventListener('touchstart', function(e) {
+                e.preventDefault();
+            }, { passive: false });
+
+            // Close mobile menu when clicking outside
+            document.addEventListener('click', function(e) {
+                if (!mobileMenuButton.contains(e.target) && !mobileMenu.contains(e.target)) {
+                    if (!mobileMenu.classList.contains('hidden')) {
                         mobileMenu.style.maxHeight = '0';
                         document.body.classList.remove('mobile-menu-open');
                         setTimeout(() => {
                             mobileMenu.classList.add('hidden');
                         }, 300);
-                        
-                        // Animate X to hamburger
-                        hamburgerLine1.classList.remove('hidden');
-                        hamburgerLine2.classList.add('hidden');
-                    }
-                });
-            }
 
-            // Handle mobile dropdown toggles
-            const dropdownToggles = document.querySelectorAll('.mobile-dropdown-toggle');
-            
-            dropdownToggles.forEach(toggle => {
-                toggle.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    
-                    const dropdown = this.closest('.mobile-dropdown');
-                    const content = dropdown.querySelector('.mobile-dropdown-content');
-                    const arrow = dropdown.querySelector('.mobile-dropdown-arrow');
-                    
-                    // Close other dropdowns
-                    dropdownToggles.forEach(otherToggle => {
-                        if (otherToggle !== this) {
-                            const otherDropdown = otherToggle.closest('.mobile-dropdown');
-                            const otherContent = otherDropdown.querySelector('.mobile-dropdown-content');
-                            const otherArrow = otherDropdown.querySelector('.mobile-dropdown-arrow');
-                            
-                            otherContent.classList.add('hidden');
-                            otherArrow.style.transform = 'rotate(0deg)';
-                        }
-                    });
-                    
-                    // Toggle current dropdown
-                    const isHidden = content.classList.contains('hidden');
-                    
-                    if (isHidden) {
-                        content.classList.remove('hidden');
-                        arrow.style.transform = 'rotate(180deg)';
-                        
-                        // Animate content appearance
-                        content.style.opacity = '0';
-                        content.style.transform = 'translateY(-10px)';
-                        
-                        setTimeout(() => {
-                            content.style.transition = 'all 0.3s ease';
-                            content.style.opacity = '1';
-                            content.style.transform = 'translateY(0)';
-                        }, 10);
-                    } else {
-                        content.style.transition = 'all 0.3s ease';
-                        content.style.opacity = '0';
-                        content.style.transform = 'translateY(-10px)';
-                        arrow.style.transform = 'rotate(0deg)';
-                        
-                        setTimeout(() => {
-                            content.classList.add('hidden');
-                        }, 300);
+                        // Reset hamburger
+                        if (hamburgerLine1) hamburgerLine1.classList.remove('hidden');
+                        if (hamburgerLine2) hamburgerLine2.classList.add('hidden');
                     }
-                });
-            });
-
-            // Close mobile menu when clicking outside
-            document.addEventListener('click', function(e) {
-                if (!mobileMenuButton.contains(e.target) && !mobileMenu.contains(e.target)) {
-                     if (!mobileMenu.classList.contains('hidden')) {
-                         mobileMenu.style.maxHeight = '0';
-                         document.body.classList.remove('mobile-menu-open');
-                         setTimeout(() => {
-                             mobileMenu.classList.add('hidden');
-                         }, 300);
-                         
-                         // Reset hamburger
-                         hamburgerLine1.classList.remove('hidden');
-                         hamburgerLine2.classList.add('hidden');
-                     }
-                 }
+                }
             });
 
             // Handle window resize
             window.addEventListener('resize', function() {
                 if (window.innerWidth >= 768) { // md breakpoint
-                     mobileMenu.classList.add('hidden');
-                     mobileMenu.style.maxHeight = '';
-                     document.body.classList.remove('mobile-menu-open');
-                     
-                     // Reset hamburger
-                     hamburgerLine1.classList.remove('hidden');
-                     hamburgerLine2.classList.add('hidden');
-                     
-                     // Close all dropdowns
-                     dropdownToggles.forEach(toggle => {
-                         const dropdown = toggle.closest('.mobile-dropdown');
-                         const content = dropdown.querySelector('.mobile-dropdown-content');
-                         const arrow = dropdown.querySelector('.mobile-dropdown-arrow');
-                         
-                         content.classList.add('hidden');
-                         arrow.style.transform = 'rotate(0deg)';
-                     });
-                 }
+                    mobileMenu.classList.add('hidden');
+                    mobileMenu.style.maxHeight = '';
+                    document.body.classList.remove('mobile-menu-open');
+
+                    // Reset hamburger
+                    if (hamburgerLine1) hamburgerLine1.classList.remove('hidden');
+                    if (hamburgerLine2) hamburgerLine2.classList.add('hidden');
+
+                    // Close all dropdowns
+                    document.querySelectorAll('.mobile-dropdown-content').forEach(content => {
+                        content.classList.add('hidden');
+                    });
+                    document.querySelectorAll('.mobile-dropdown-arrow').forEach(arrow => {
+                        arrow.style.transform = 'rotate(0deg)';
+                    });
+                }
+
+                // Handle very small screens (480px and below)
+                if (window.innerWidth <= 480) {
+                    // Ensure mobile menu positioning is correct for small screens
+                    mobileMenu.style.position = 'fixed';
+                    mobileMenu.style.top = '64px';
+                    mobileMenu.style.left = '0';
+                    mobileMenu.style.right = '0';
+                    mobileMenu.style.zIndex = '9999';
+                } else if (window.innerWidth > 480 && window.innerWidth <= 768) {
+                    // Reset positioning for medium mobile screens
+                    mobileMenu.style.position = 'relative';
+                    mobileMenu.style.top = 'auto';
+                    mobileMenu.style.left = 'auto';
+                    mobileMenu.style.right = 'auto';
+                    mobileMenu.style.zIndex = '40';
+                }
             });
-        });
+
+            // Initialize dropdowns
+            initializeDropdowns();
+            mobileMenuInitialized = true;
+        }
+
+        function initializeDropdowns() {
+            console.log('Initializing dropdowns...');
+
+            // Get dropdown toggles
+            const dropdownToggles = document.querySelectorAll('.mobile-dropdown-toggle');
+
+            if (dropdownToggles.length === 0) {
+                console.log('No dropdown toggles found, retrying in 200ms...');
+                setTimeout(initializeDropdowns, 200);
+                return;
+            }
+
+            console.log('Found dropdown toggles:', dropdownToggles.length);
+
+            // Function to toggle dropdown
+            function toggleDropdown(toggle) {
+                console.log('Toggling dropdown for:', toggle.textContent.trim());
+
+                const dropdown = toggle.closest('.mobile-dropdown');
+                const content = dropdown ? dropdown.querySelector('.mobile-dropdown-content') : null;
+                const arrow = dropdown ? dropdown.querySelector('.mobile-dropdown-arrow') : null;
+
+                if (!dropdown || !content || !arrow) {
+                    console.error('Missing dropdown elements for:', toggle.textContent.trim());
+                    return;
+                }
+
+                // Close other dropdowns
+                document.querySelectorAll('.mobile-dropdown-content').forEach(otherContent => {
+                    if (otherContent !== content) {
+                        otherContent.classList.add('hidden');
+                        const otherDropdown = otherContent.closest('.mobile-dropdown');
+                        const otherArrow = otherDropdown ? otherDropdown.querySelector('.mobile-dropdown-arrow') : null;
+                        if (otherArrow) otherArrow.style.transform = 'rotate(0deg)';
+                    }
+                });
+
+                // Toggle current dropdown
+                const isHidden = content.classList.contains('hidden');
+
+                if (isHidden) {
+                    content.classList.remove('hidden');
+                    arrow.style.transform = 'rotate(180deg)';
+                    console.log('Dropdown opened');
+                } else {
+                    content.classList.add('hidden');
+                    arrow.style.transform = 'rotate(0deg)';
+                    console.log('Dropdown closed');
+                }
+            }
+
+            // Setup event delegation
+            const mobileMenu = document.querySelector('.mobile-menu');
+            if (!mobileMenu) {
+                console.error('Mobile menu container not found');
+                return;
+            }
+
+            // Remove existing event listeners if they exist
+            if (dropdownHandlers.click) {
+                mobileMenu.removeEventListener('click', dropdownHandlers.click);
+            }
+            if (dropdownHandlers.touchend) {
+                mobileMenu.removeEventListener('touchend', dropdownHandlers.touchend);
+            }
+            if (dropdownHandlers.touchstart) {
+                mobileMenu.removeEventListener('touchstart', dropdownHandlers.touchstart);
+            }
+
+            // Create new event handlers
+            dropdownHandlers.click = function(e) {
+                const toggle = e.target.closest('.mobile-dropdown-toggle');
+                if (toggle) {
+                    console.log('Click event triggered on:', toggle.textContent.trim());
+                    e.preventDefault();
+                    e.stopPropagation();
+                    toggleDropdown(toggle);
+                }
+            };
+
+            dropdownHandlers.touchend = function(e) {
+                const toggle = e.target.closest('.mobile-dropdown-toggle');
+                if (toggle) {
+                    console.log('Touch end event triggered on:', toggle.textContent.trim());
+                    e.preventDefault();
+                    e.stopPropagation();
+                    toggleDropdown(toggle);
+                }
+            };
+
+            dropdownHandlers.touchstart = function(e) {
+                const toggle = e.target.closest('.mobile-dropdown-toggle');
+                if (toggle) {
+                    e.preventDefault();
+                }
+            };
+
+            // Add event listeners
+            mobileMenu.addEventListener('click', dropdownHandlers.click);
+            mobileMenu.addEventListener('touchend', dropdownHandlers.touchend, { passive: false });
+            mobileMenu.addEventListener('touchstart', dropdownHandlers.touchstart, { passive: false });
+
+            console.log('Event delegation setup complete for mobile dropdowns');
+        }
+
+        // Initialize when DOM is ready
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initializeMobileMenu);
+        } else {
+            // DOM already loaded
+            setTimeout(initializeMobileMenu, 100);
+        }
     </script>
 </body>
 </html>

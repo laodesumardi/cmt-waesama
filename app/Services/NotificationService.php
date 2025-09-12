@@ -53,16 +53,21 @@ class NotificationService
             throw new \Exception('User parameter cannot be a collection');
         }
         
+        // Prepare data for JSON storage, excluding title and message which are stored separately
+        $jsonData = $data;
+        unset($jsonData['title'], $jsonData['message']);
+        
+        // Ensure required fields are present
+        $jsonData['url'] = $data['url'] ?? null;
+        $jsonData['icon'] = $data['icon'] ?? 'fas fa-bell';
+        
         return Notification::create([
             'type' => $type,
             'title' => $data['title'] ?? 'Notifikasi Baru',
             'message' => $data['message'] ?? '',
             'notifiable_type' => get_class($user),
             'notifiable_id' => $user->id,
-            'data' => json_encode([
-                'url' => $data['url'] ?? null,
-                'icon' => $data['icon'] ?? 'fas fa-bell',
-            ]),
+            'data' => json_encode($jsonData),
             'action_url' => $data['url'] ?? null,
             'priority' => $options['priority'] ?? 'medium',
         ]);
@@ -343,10 +348,24 @@ class NotificationService
             $users = $recipients->all();
         }
 
+        // Generate URL safely - check if document request has valid ID
+        $url = null;
+        if ($documentRequest->id && $documentRequest->exists) {
+            try {
+                $url = route('admin.documents.show', $documentRequest->id);
+            } catch (\Exception $e) {
+                // Fallback to admin dashboard if route generation fails
+                $url = route('admin.dashboard');
+            }
+        } else {
+            // Fallback to admin dashboard for unsaved document requests
+            $url = route('admin.dashboard');
+        }
+
         return $this->send($users, 'document_request', [
             'title' => 'Pengajuan Dokumen Baru',
-            'message' => 'Pengajuan ' . $documentRequest->document_type_label . ' dari ' . $documentRequest->name,
-            'url' => route('admin.document-requests.show', $documentRequest->id),
+            'message' => 'Pengajuan ' . ($documentRequest->document_type_label ?? $documentRequest->document_type) . ' dari ' . ($documentRequest->applicant_name ?? $documentRequest->name ?? 'Pemohon'),
+            'url' => $url,
             'icon' => $typeConfig['icon'],
             'document_request_id' => $documentRequest->id,
             'document_type' => $documentRequest->document_type,
@@ -374,16 +393,24 @@ class NotificationService
         // Send to document requester
         $userTypeConfig = NotificationTypeService::getType('document_request', 'status_updated');
         if ($userTypeConfig) {
+            // Special message for processing status
+            $message = 'Status pengajuan ' . $documentRequest->document_type_label . ' Anda berubah menjadi ' . ($statusMessages[$documentRequest->status] ?? $documentRequest->status);
+            if ($documentRequest->status === 'processing') {
+                $message .= '. Dokumen Anda sedang diproses dan diperkirakan selesai dalam 1-3 hari kerja.';
+            } elseif ($documentRequest->status === 'ready') {
+                $message .= '. Dokumen Anda sudah siap diambil di kantor kecamatan pada jam kerja.';
+            }
+            
             $this->send([$documentRequest->user], 'document_request_status', [
                 'title' => 'Status Pengajuan Diperbarui',
-                'message' => 'Status pengajuan ' . $documentRequest->document_type_label . ' Anda berubah menjadi ' . ($statusMessages[$documentRequest->status] ?? $documentRequest->status),
+                'message' => $message,
                 'url' => route('documents.show', $documentRequest->id),
                 'icon' => $userTypeConfig['icon'],
                 'document_request_id' => $documentRequest->id,
                 'old_status' => $oldStatus,
                 'new_status' => $documentRequest->status,
             ], [
-                'priority' => $userTypeConfig['priority'],
+                'priority' => $documentRequest->status === 'processing' ? 'medium' : $userTypeConfig['priority'],
                 'broadcast' => true,
                 'email' => true,
             ]);
@@ -402,8 +429,8 @@ class NotificationService
 
             return $this->send($recipients->all(), 'document_request_status_admin', [
                 'title' => 'Status Dokumen Diperbarui',
-                'message' => 'Status pengajuan ' . $documentRequest->document_type_label . ' dari ' . $documentRequest->name . ' berubah menjadi ' . ($statusMessages[$documentRequest->status] ?? $documentRequest->status),
-                'url' => route('admin.document-requests.show', $documentRequest->id),
+                'message' => 'Status pengajuan ' . $documentRequest->document_type_label . ' dari ' . ($documentRequest->applicant_name ?? 'Pemohon') . ' berubah menjadi ' . ($statusMessages[$documentRequest->status] ?? $documentRequest->status),
+                'url' => route('admin.documents.show', $documentRequest->id),
                 'icon' => $adminTypeConfig['icon'],
                 'document_request_id' => $documentRequest->id,
                 'old_status' => $oldStatus,
@@ -472,6 +499,112 @@ class NotificationService
                 'complaint_id' => $complaint->id,
                 'old_status' => $oldStatus,
                 'new_status' => $complaint->status,
+            ], [
+                'priority' => $adminTypeConfig['priority'],
+                'broadcast' => true,
+            ]);
+        }
+    }
+
+    /**
+     * Send notification for new letter request
+     */
+    public function sendLetterRequestNotification($letterRequest)
+    {
+        $typeConfig = NotificationTypeService::getType('letter_request', 'created');
+        if (!$typeConfig) {
+            return false;
+        }
+
+        $recipients = collect();
+        foreach ($typeConfig['target_roles'] as $role) {
+            $roleUsers = User::whereHas('roles', function($q) use ($role) {
+                $q->where('name', $role);
+            })->get();
+            $recipients = $recipients->merge($roleUsers);
+        }
+
+        // Remove duplicate users (in case a user has multiple target roles)
+        $recipients = $recipients->unique('id');
+
+        $url = route('admin.letters.show', $letterRequest->id);
+
+        return $this->send($recipients->all(), 'letter_request_created', [
+            'title' => 'Pengajuan Surat Baru',
+            'message' => 'Pengajuan surat ' . ($letterRequest->letter_type ?? 'Unknown') . ' dari ' . ($letterRequest->applicant_name ?? 'Pemohon'),
+            'url' => $url,
+            'icon' => $typeConfig['icon'],
+            'letter_request_id' => $letterRequest->id,
+            'letter_type' => $letterRequest->letter_type,
+        ], [
+            'priority' => $typeConfig['priority'],
+            'broadcast' => true,
+            'email' => true,
+        ]);
+    }
+
+    /**
+     * Send notification for letter request status update
+     */
+    public function sendLetterRequestStatusNotification($letterRequest, $oldStatus)
+    {
+        $statusMessages = [
+            'pending' => 'Menunggu Verifikasi',
+            'processing' => 'Sedang Diproses',
+            'completed' => 'Selesai',
+            'rejected' => 'Ditolak',
+        ];
+
+        // Send to letter requester
+        if ($letterRequest->user_id) {
+            $user = User::find($letterRequest->user_id);
+            if ($user) {
+                $userTypeConfig = NotificationTypeService::getType('letter_request', 'status_updated');
+                if ($userTypeConfig) {
+                    // Special message for processing status
+                    $message = 'Status pengajuan surat ' . $letterRequest->letter_type . ' Anda berubah menjadi ' . ($statusMessages[$letterRequest->status] ?? $letterRequest->status);
+                    if ($letterRequest->status === 'processing') {
+                        $message .= '. Surat Anda sedang diproses dan diperkirakan selesai dalam 1-3 hari kerja.';
+                    } elseif ($letterRequest->status === 'completed') {
+                        $message .= '. Surat Anda sudah siap diambil di kantor kecamatan pada jam kerja.';
+                    }
+                    
+                    $this->send([$user], 'letter_request_status', [
+                        'title' => 'Status Pengajuan Surat Diperbarui',
+                        'message' => $message,
+                        'url' => route('dashboard'),
+                        'icon' => $userTypeConfig['icon'] ?? 'fas fa-envelope',
+                        'letter_request_id' => $letterRequest->id,
+                        'old_status' => $oldStatus,
+                        'new_status' => $letterRequest->status,
+                    ], [
+                        'priority' => $letterRequest->status === 'processing' ? 'medium' : ($userTypeConfig['priority'] ?? 'medium'),
+                        'broadcast' => true,
+                        'email' => true,
+                    ]);
+                }
+            }
+        }
+
+        // Send to admin/staff
+        $adminTypeConfig = NotificationTypeService::getType('letter_request', 'status_updated_admin');
+        if ($adminTypeConfig) {
+            $recipients = collect();
+            foreach ($adminTypeConfig['target_roles'] as $role) {
+                $roleUsers = User::whereHas('roles', function($q) use ($role) {
+                    $q->where('name', $role);
+                })->get();
+                $recipients = $recipients->merge($roleUsers);
+            }
+
+            return $this->send($recipients->all(), 'letter_request_status_admin', [
+                'title' => 'Status Surat Diperbarui',
+                'message' => 'Status surat ' . $letterRequest->letter_type . ' dari ' . $letterRequest->applicant_name . ' berubah menjadi ' . ($statusMessages[$letterRequest->status] ?? $letterRequest->status),
+                'url' => route('admin.letters.show', $letterRequest->id),
+                'icon' => $adminTypeConfig['icon'],
+                'letter_request_id' => $letterRequest->id,
+                'old_status' => $oldStatus,
+                'new_status' => $letterRequest->status,
             ], [
                 'priority' => $adminTypeConfig['priority'],
                 'broadcast' => true,

@@ -49,7 +49,7 @@
         <div class="max-h-96 overflow-y-auto">
             <div id="notifications-list">
                 <!-- Notifications will be loaded here by JavaScript -->
-                <div class="text-center py-8 text-gray-500">
+                <div class="flex flex-col items-center justify-center py-8 text-gray-500">
                     <i class="fas fa-spinner fa-spin text-2xl mb-2"></i>
                     <p class="text-sm">Memuat notifikasi...</p>
                 </div>

@@ -90,7 +90,13 @@
                     
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-1">Tanggal Pengajuan</label>
-                        <p class="text-gray-900">{{ $document->created_at->format('d F Y, H:i') }} WIB</p>
+                        <p class="text-gray-900">
+                            @if($document->created_at)
+                                {{ $document->created_at->format('d F Y, H:i') }} WIB
+                            @else
+                                Tanggal tidak tersedia
+                            @endif
+                        </p>
                     </div>
                     
                     @if($document->processed_at)
@@ -137,13 +143,20 @@
                     </div>
                     
                     <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Nomor Telepon</label>
+                        <p class="text-gray-900">{{ $document->applicant_phone }}</p>
+                    </div>
+                    
+                    <div>
                         <label class="block text-sm font-medium text-gray-700 mb-1">Tempat, Tanggal Lahir</label>
-                        <p class="text-gray-900">{{ $document->applicant_birth_place }}, {{ \Carbon\Carbon::parse($document->applicant_birth_date)->format('d F Y') }}</p>
+                        <p class="text-gray-900">
+                            {{ $document->applicant_birth_place }}@if($document->applicant_birth_date), {{ \Carbon\Carbon::parse($document->applicant_birth_date)->format('d F Y') }}@endif
+                        </p>
                     </div>
                     
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-1">Jenis Kelamin</label>
-                        <p class="text-gray-900">{{ $document->applicant_gender === 'male' ? 'Laki-laki' : 'Perempuan' }}</p>
+                        <p class="text-gray-900">{{ $document->applicant_gender }}</p>
                     </div>
                     
                     <div>
@@ -272,7 +285,7 @@
                     
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-1">Bergabung</label>
-                        <p class="text-gray-900">{{ $document->user->created_at->format('d F Y') }}</p>
+                        <p class="text-gray-900">{{ $document->user && $document->user->created_at ? $document->user->created_at->format('d F Y') : '-' }}</p>
                     </div>
                 </div>
             </div>

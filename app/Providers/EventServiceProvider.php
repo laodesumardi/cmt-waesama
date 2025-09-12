@@ -11,6 +11,8 @@ use App\Events\NewsUpdated;
 use App\Events\GalleryCreated;
 use App\Events\DocumentRequestCreated;
 use App\Events\DocumentRequestUpdated;
+use App\Events\LetterRequestCreated;
+use App\Events\LetterRequestUpdated;
 use App\Listeners\SendComplaintCreatedNotification;
 use App\Listeners\SendComplaintUpdatedNotification;
 use App\Listeners\SendTransparencyCreatedNotification;
@@ -20,6 +22,8 @@ use App\Listeners\SendNewsUpdatedNotification;
 use App\Listeners\SendGalleryCreatedNotification;
 use App\Listeners\SendDocumentRequestCreatedNotification;
 use App\Listeners\SendDocumentRequestUpdatedNotification;
+use App\Listeners\SendLetterRequestCreatedNotification;
+use App\Listeners\SendLetterRequestUpdatedNotification;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
@@ -72,6 +76,14 @@ class EventServiceProvider extends ServiceProvider
         ],
         DocumentRequestUpdated::class => [
             SendDocumentRequestUpdatedNotification::class,
+        ],
+        
+        // Letter Request Events
+        LetterRequestCreated::class => [
+            SendLetterRequestCreatedNotification::class,
+        ],
+        LetterRequestUpdated::class => [
+            SendLetterRequestUpdatedNotification::class,
         ],
     ];
 

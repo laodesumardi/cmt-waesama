@@ -165,7 +165,7 @@
                                     </div>
                                     <div class="ml-4">
                                         <p class="text-sm font-medium text-gray-900">Pengajuan Diterima</p>
-                                        <p class="text-sm text-gray-500">{{ $document->created_at->format('d M Y, H:i') }}</p>
+                                        <p class="text-sm text-gray-500">{{ $document->created_at ? $document->created_at->format('d M Y, H:i') : '-' }}</p>
                                         <p class="text-xs text-gray-400">Pengajuan berhasil diterima sistem</p>
                                     </div>
                                 </div>
@@ -237,7 +237,7 @@
                                         </div>
                                         <div class="ml-4">
                                             <p class="text-sm font-medium text-gray-900">Ditolak</p>
-                                            <p class="text-sm text-gray-500">{{ $document->updated_at->format('d M Y, H:i') }}</p>
+                                            <p class="text-sm text-gray-500">{{ $document->updated_at ? $document->updated_at->format('d M Y, H:i') : '-' }}</p>
                                             <p class="text-xs text-gray-400">Silakan periksa catatan untuk detail</p>
                                         </div>
                                     </div>

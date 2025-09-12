@@ -21,3 +21,33 @@ yarn-error.log
 /.nova
 /.vscode
 /.zed
+
+# Development and testing files
+test_*.php
+test_*.html
+debug_*.php
+check_*.php
+fix_*.php
+composer.phar
+laravel-echo-server.json
+
+# Storage files (except .gitignore)
+/storage/app/public/*
+!/storage/app/public/.gitignore
+/storage/framework/cache/*
+!/storage/framework/cache/.gitignore
+/storage/framework/sessions/*
+!/storage/framework/sessions/.gitignore
+/storage/framework/views/*
+!/storage/framework/views/.gitignore
+/storage/logs/*
+!/storage/logs/.gitignore
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db

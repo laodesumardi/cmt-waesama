@@ -316,7 +316,7 @@
                 requestData.rejection_reason = rejectionReason;
             }
             
-            fetch(`{{ route('staff.services.update-status', $documentRequest) }}`, {
+            fetch(`{{ route('staff.services.updateStatus', $documentRequest) }}`, {
                 method: 'PUT',
                 headers: {
                     'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),

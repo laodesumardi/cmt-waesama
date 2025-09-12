@@ -121,7 +121,7 @@
                     <div class="mb-6">
                         <label class="block text-sm font-medium text-gray-700 mb-2">Tags</label>
                         <div class="flex flex-wrap gap-2">
-                            @foreach(explode(',', $news->tags) as $tag)
+                            @foreach($news->tags as $tag)
                                 <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
                                     <i class="fas fa-tag mr-1"></i>
                                     {{ trim($tag) }}

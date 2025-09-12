@@ -122,6 +122,111 @@
                                     <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                                 @enderror
                             </div>
+
+                            <!-- Birth Place -->
+                            <div>
+                                <label for="applicant_birth_place" class="block text-sm font-medium text-gray-700 mb-2">Tempat Lahir *</label>
+                                <input type="text" id="applicant_birth_place" name="applicant_birth_place" value="{{ old('applicant_birth_place') }}" required 
+                                       class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#14213d] focus:border-transparent @error('applicant_birth_place') border-red-500 @enderror"
+                                       placeholder="Masukkan tempat lahir">
+                                @error('applicant_birth_place')
+                                    <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                                @enderror
+                            </div>
+
+                            <!-- Birth Date -->
+                            <div>
+                                <label for="applicant_birth_date" class="block text-sm font-medium text-gray-700 mb-2">Tanggal Lahir *</label>
+                                <input type="date" id="applicant_birth_date" name="applicant_birth_date" value="{{ old('applicant_birth_date') }}" required 
+                                       class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#14213d] focus:border-transparent @error('applicant_birth_date') border-red-500 @enderror">
+                                @error('applicant_birth_date')
+                                    <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                                @enderror
+                            </div>
+
+                            <!-- Gender -->
+                            <div>
+                                <label for="applicant_gender" class="block text-sm font-medium text-gray-700 mb-2">Jenis Kelamin *</label>
+                                <select id="applicant_gender" name="applicant_gender" required 
+                                        class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#14213d] focus:border-transparent @error('applicant_gender') border-red-500 @enderror">
+                                    <option value="">Pilih jenis kelamin</option>
+                                    <option value="Laki-laki" {{ old('applicant_gender') == 'Laki-laki' ? 'selected' : '' }}>Laki-laki</option>
+                                    <option value="Perempuan" {{ old('applicant_gender') == 'Perempuan' ? 'selected' : '' }}>Perempuan</option>
+                                </select>
+                                @error('applicant_gender')
+                                    <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                                @enderror
+                            </div>
+
+                            <!-- Religion -->
+                            <div>
+                                <label for="applicant_religion" class="block text-sm font-medium text-gray-700 mb-2">Agama *</label>
+                                <select id="applicant_religion" name="applicant_religion" required 
+                                        class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#14213d] focus:border-transparent @error('applicant_religion') border-red-500 @enderror">
+                                    <option value="">Pilih agama</option>
+                                    <option value="Islam" {{ old('applicant_religion') == 'Islam' ? 'selected' : '' }}>Islam</option>
+                                    <option value="Kristen" {{ old('applicant_religion') == 'Kristen' ? 'selected' : '' }}>Kristen</option>
+                                    <option value="Katolik" {{ old('applicant_religion') == 'Katolik' ? 'selected' : '' }}>Katolik</option>
+                                    <option value="Hindu" {{ old('applicant_religion') == 'Hindu' ? 'selected' : '' }}>Hindu</option>
+                                    <option value="Buddha" {{ old('applicant_religion') == 'Buddha' ? 'selected' : '' }}>Buddha</option>
+                                    <option value="Konghucu" {{ old('applicant_religion') == 'Konghucu' ? 'selected' : '' }}>Konghucu</option>
+                                </select>
+                                @error('applicant_religion')
+                                    <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                                @enderror
+                            </div>
+
+                            <!-- Marital Status -->
+                            <div>
+                                <label for="applicant_marital_status" class="block text-sm font-medium text-gray-700 mb-2">Status Perkawinan *</label>
+                                <select id="applicant_marital_status" name="applicant_marital_status" required 
+                                        class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#14213d] focus:border-transparent @error('applicant_marital_status') border-red-500 @enderror">
+                                    <option value="">Pilih status perkawinan</option>
+                                    <option value="Belum Kawin" {{ old('applicant_marital_status') == 'Belum Kawin' ? 'selected' : '' }}>Belum Kawin</option>
+                                    <option value="Kawin" {{ old('applicant_marital_status') == 'Kawin' ? 'selected' : '' }}>Kawin</option>
+                                    <option value="Cerai Hidup" {{ old('applicant_marital_status') == 'Cerai Hidup' ? 'selected' : '' }}>Cerai Hidup</option>
+                                    <option value="Cerai Mati" {{ old('applicant_marital_status') == 'Cerai Mati' ? 'selected' : '' }}>Cerai Mati</option>
+                                </select>
+                                @error('applicant_marital_status')
+                                    <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                                @enderror
+                            </div>
+
+                            <!-- Occupation -->
+                            <div>
+                                <label for="applicant_occupation" class="block text-sm font-medium text-gray-700 mb-2">Pekerjaan *</label>
+                                <input type="text" id="applicant_occupation" name="applicant_occupation" value="{{ old('applicant_occupation') }}" required 
+                                       class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#14213d] focus:border-transparent @error('applicant_occupation') border-red-500 @enderror"
+                                       placeholder="Masukkan pekerjaan">
+                                @error('applicant_occupation')
+                                    <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                                @enderror
+                            </div>
+
+                            <!-- Nationality -->
+                            <div>
+                                <label for="applicant_nationality" class="block text-sm font-medium text-gray-700 mb-2">Kewarganegaraan *</label>
+                                <select id="applicant_nationality" name="applicant_nationality" required 
+                                        class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#14213d] focus:border-transparent @error('applicant_nationality') border-red-500 @enderror">
+                                    <option value="">Pilih kewarganegaraan</option>
+                                    <option value="WNI" {{ old('applicant_nationality') == 'WNI' ? 'selected' : '' }}>Warga Negara Indonesia (WNI)</option>
+                                    <option value="WNA" {{ old('applicant_nationality') == 'WNA' ? 'selected' : '' }}>Warga Negara Asing (WNA)</option>
+                                </select>
+                                @error('applicant_nationality')
+                                    <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                                @enderror
+                            </div>
+
+                            <!-- Email -->
+                            <div>
+                                <label for="applicant_email" class="block text-sm font-medium text-gray-700 mb-2">Email</label>
+                                <input type="email" id="applicant_email" name="applicant_email" value="{{ old('applicant_email') }}" 
+                                       class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#14213d] focus:border-transparent @error('applicant_email') border-red-500 @enderror"
+                                       placeholder="Masukkan alamat email (opsional)">
+                                @error('applicant_email')
+                                    <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                                @enderror
+                            </div>
                         </div>
 
                         <!-- Address -->

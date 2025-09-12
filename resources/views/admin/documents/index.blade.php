@@ -345,8 +345,8 @@
                                     </td>
                                     <td class="px-6 py-5 whitespace-nowrap">
                                         <div class="bg-gray-50 px-3 py-2 rounded-lg">
-                                            <div class="text-sm font-semibold text-gray-900">{{ $document->created_at->format('d/m/Y') }}</div>
-                                            <div class="text-xs text-gray-500 mt-1">{{ $document->created_at->format('H:i') }} WIB</div>
+                                            <div class="text-sm font-semibold text-gray-900">{{ $document->created_at ? $document->created_at->format('d/m/Y') : '-' }}</div>
+                                            <div class="text-xs text-gray-500 mt-1">{{ $document->created_at ? $document->created_at->format('H:i') : '-' }} WIB</div>
                                         </div>
                                     </td>
                                     <td class="px-6 py-5 whitespace-nowrap text-sm font-medium">

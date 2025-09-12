@@ -31,11 +31,27 @@ class NotificationManager {
     }
 
     setupEventListeners() {
-        // Mark as read when clicked
+        // Mark as read and navigate when clicked
         document.addEventListener('click', (e) => {
-            if (e.target.closest('.notification-item')) {
-                const notificationId = e.target.closest('.notification-item').dataset.id;
+            const notificationItem = e.target.closest('.notification-item');
+            if (notificationItem) {
+                // Don't navigate if clicking on the "Lihat Detail" link directly
+                if (e.target.closest('a[href]')) {
+                    return;
+                }
+                
+                const notificationId = notificationItem.dataset.id;
+                const notification = this.notifications.find(n => n.id == notificationId);
+                
+                // Mark as read
                 this.markAsRead(notificationId);
+                
+                // Navigate to detail page if action_url exists
+                if (notification && notification.action_url) {
+                    setTimeout(() => {
+                        window.location.href = notification.action_url;
+                    }, 100); // Small delay to ensure mark as read completes
+                }
             }
         });
 
@@ -180,7 +196,7 @@ class NotificationManager {
 
     async markAsRead(notificationId) {
         try {
-            const response = await fetch(`/admin/notifications/${notificationId}/read`, {
+            const response = await fetch(`/notifications/${notificationId}/read`, {
                 method: 'POST',
                 headers: {
                     'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
@@ -204,7 +220,7 @@ class NotificationManager {
 
     async markAllAsRead() {
         try {
-            const response = await fetch('/admin/notifications/read-all', {
+            const response = await fetch('/notifications/read-all', {
                 method: 'POST',
                 headers: {
                     'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,

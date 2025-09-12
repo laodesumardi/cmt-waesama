@@ -27,7 +27,7 @@
                                 <h4 class="text-xl font-bold text-[#14213d]">Layanan Surat</h4>
                             </div>
                             <p class="text-gray-600 mb-6 leading-relaxed">Ajukan berbagai jenis surat keterangan secara online dengan proses yang cepat dan mudah</p>
-                            <a href="#" class="inline-flex items-center bg-[#14213d] text-white px-6 py-3 rounded-lg font-medium hover:bg-[#0f1a2e] transition-colors duration-300 shadow-md hover:shadow-lg">
+                            <a href="{{ route('services.letters') }}" class="inline-flex items-center bg-[#14213d] text-white px-6 py-3 rounded-lg font-medium hover:bg-[#0f1a2e] transition-colors duration-300 shadow-md hover:shadow-lg">
                                 Ajukan Surat
                                 <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
@@ -86,7 +86,7 @@
                             </div>
                             <h5 class="text-lg font-semibold text-gray-700 mb-2">Belum ada pengajuan</h5>
                             <p class="text-gray-500 mb-6">Mulai ajukan layanan surat untuk melihat status di sini</p>
-                            <a href="#" class="inline-flex items-center bg-[#14213d] text-white px-6 py-3 rounded-lg font-medium hover:bg-[#0f1a2e] transition-colors duration-300">
+                            <a href="{{ route('services.letters') }}" class="inline-flex items-center bg-[#14213d] text-white px-6 py-3 rounded-lg font-medium hover:bg-[#0f1a2e] transition-colors duration-300">
                                 Mulai Pengajuan
                                 <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
