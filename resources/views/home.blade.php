@@ -223,7 +223,7 @@
                             </svg>
                         </div>
                         <h3 class="text-lg font-bold text-white mb-2 group-hover:text-yellow-400 transition-colors duration-300">Kecamatan Waesama</h3>
-                        <p class="text-gray-300 text-sm mb-3">Desa pusat kecamatan dengan fasilitas lengkap</p>
+                        <p class="text-gray-300 text-sm mb-3"> kecamatan dengan fasilitas lengkap</p>
                         <div class="text-xs text-gray-400">
                             <div class="flex items-center mb-1">
                                 <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
