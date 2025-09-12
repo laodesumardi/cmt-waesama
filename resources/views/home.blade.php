@@ -222,7 +222,7 @@
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path>
                             </svg>
                         </div>
-                        <h3 class="text-lg font-bold text-white mb-2 group-hover:text-yellow-400 transition-colors duration-300">Desa Waesama</h3>
+                        <h3 class="text-lg font-bold text-white mb-2 group-hover:text-yellow-400 transition-colors duration-300">Kecamatan Waesama</h3>
                         <p class="text-gray-300 text-sm mb-3">Desa pusat kecamatan dengan fasilitas lengkap</p>
                         <div class="text-xs text-gray-400">
                             <div class="flex items-center mb-1">
